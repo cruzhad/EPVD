@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Universo de las Fuerzas — Cuestionario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1628;
+    --panel:#10203A;
+    --panel-2:#152A4A;
+    --line:#24406b;
+    --amber:#FFB343;
+    --cyan:#4FD1C5;
+    --green:#4CAF7D;
+    --red:#E4572E;
+    --text:#EAF2FB;
+    --muted:#8FA3BF;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  html,body{min-height:100%;}
+  body{
+    background:
+      radial-gradient(circle at 15% 10%, rgba(79,209,197,0.08), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(255,179,67,0.08), transparent 40%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 40px),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  .stage{
+    width:100%;
+    max-width:760px;
+  }
+  .card{
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:40px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.45);
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:4px;
+    border-radius:18px 18px 0 0;
+    background:linear-gradient(90deg, var(--amber), var(--cyan));
+  }
+  .screen{display:none;}
+  .screen.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    display:flex;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow .dot{width:6px; height:6px; min-width:6px; border-radius:50%; background:var(--amber); margin-top:5px;}
+  .eyebrow .eyebrow-text{min-width:0; overflow-wrap:break-word; word-break:break-word;}
+
+  h1{
+    font-family:var(--font-display);
+    font-size:clamp(26px, 4vw, 34px);
+    line-height:1.15;
+    margin-bottom:10px;
+    letter-spacing:-.01em;
+  }
+  h1 span{color:var(--amber);}
+  .subtitle{color:var(--muted); font-size:15px; line-height:1.6; margin-bottom:28px;}
+
+  .rules{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:28px;
+  }
+  .rules li{
+    list-style:none;
+    position:relative;
+    font-size:13.5px;
+    color:var(--muted);
+    line-height:1.5;
+    padding:6px 0 6px 20px;
+  }
+  .rules li::before{
+    content:"▸";
+    position:absolute;
+    left:0; top:6px;
+    color:var(--amber);
+    font-weight:700;
+  }
+  .rules strong{color:var(--text); font-weight:600;}
+
+  label.field-label{
+    display:block;
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  input[type=text]{
+    width:100%;
+    padding:14px 16px;
+    background:rgba(0,0,0,0.25);
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:16px;
+    outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  input[type=text]:focus{border-color:var(--cyan); box-shadow:0 0 0 3px rgba(79,209,197,0.15);}
+  input[type=text]::placeholder{color:#4c6288;}
+
+  .btn{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:.01em;
+    border:none;
+    border-radius:10px;
+    padding:14px 26px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg, var(--amber), #ffcb7a);
+    color:#241300;
+    box-shadow:0 8px 24px rgba(255,179,67,0.25);
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 28px rgba(255,179,67,0.35);}
+  .btn-primary:disabled{opacity:.4; cursor:not-allowed; transform:none; box-shadow:none;}
+  .btn-row{margin-top:24px; display:flex; justify-content:flex-end;}
+
+  /* Quiz header */
+  .quiz-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:22px;
+    gap:20px;
+  }
+  .qcount{font-family:var(--font-mono); font-size:13px; color:var(--muted); letter-spacing:.06em;}
+  .qcount b{color:var(--cyan);}
+  .student-tag{font-family:var(--font-mono); font-size:12px; color:var(--muted); text-align:right;}
+  .student-tag b{color:var(--text); display:block; font-size:14px; font-family:var(--font-body); font-weight:600;}
+
+  /* Dynamometer timer */
+  .dyno{
+    margin-bottom:26px;
+  }
+  .dyno-row{display:flex; align-items:center; gap:12px;}
+  .dyno-cap{
+    width:14px; height:26px; background:var(--panel-2); border:1px solid var(--line);
+    border-radius:4px 0 0 4px; flex-shrink:0;
+  }
+  .dyno-tube{
+    flex:1;
+    height:26px;
+    background:rgba(0,0,0,0.3);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+    background-image:repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 10%);
+  }
+  .dyno-fill{
+    height:100%;
+    width:100%;
+    background:linear-gradient(90deg, var(--green), var(--cyan));
+    transition:width 1s linear, background .3s ease;
+    position:relative;
+  }
+  .dyno-fill.warn{background:linear-gradient(90deg, var(--amber), #ffcb7a);}
+  .dyno-fill.danger{background:linear-gradient(90deg, var(--red), #ff8a5c);}
+  .dyno-num{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--muted);
+    width:46px;
+    text-align:right;
+    flex-shrink:0;
+  }
+
+  .qtext{
+    font-family:var(--font-display);
+    font-size:clamp(19px,2.6vw,23px);
+    line-height:1.4;
+    margin-bottom:24px;
+  }
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .opt{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-align:left;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:14.5px;
+    line-height:1.4;
+    cursor:pointer;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .opt:hover:not(:disabled){border-color:var(--cyan); background:rgba(79,209,197,0.06);}
+  .opt:disabled{cursor:default;}
+  .opt .letter{
+    font-family:var(--font-mono);
+    font-weight:700;
+    font-size:13px;
+    color:var(--bg);
+    background:var(--muted);
+    width:26px; height:26px;
+    min-width:26px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    transition:background .15s;
+  }
+  .opt .opt-text{
+    min-width:0;
+    flex:1;
+    overflow-wrap:break-word;
+    word-break:break-word;
+  }
+  .opt.correct{border-color:var(--green); background:rgba(76,175,125,0.12);}
+  .opt.correct .letter{background:var(--green); color:#08210f;}
+  .opt.wrong{border-color:var(--red); background:rgba(228,87,46,0.12);}
+  .opt.wrong .letter{background:var(--red); color:#2a0a02;}
+
+  /* Results */
+  .score-block{
+    display:flex; align-items:center; gap:26px;
+    background:rgba(0,0,0,0.2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px;
+    margin-bottom:20px;
+  }
+  .score-num{
+    font-family:var(--font-mono);
+    font-size:56px;
+    font-weight:700;
+    color:var(--amber);
+    line-height:1;
+  }
+  .score-num small{font-size:20px; color:var(--muted); font-weight:500;}
+  .score-meta b{display:block; font-family:var(--font-display); font-size:18px;}
+  .score-meta span{color:var(--muted); font-size:13px;}
+
+  .stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .stat{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 18px;
+  }
+  .stat .n{font-family:var(--font-mono); font-size:26px; font-weight:700;}
+  .stat .l{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-top:4px;}
+  .stat.fraud .n{color:var(--red);}
+  .stat.ok .n{color:var(--green);}
+
+  .footer-sig{
+    margin-top:28px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--muted);
+  }
+  .footer-sig span{min-width:0; overflow-wrap:break-word; word-break:break-word; flex:1 1 220px;}
+  .footer-sig b{color:var(--text); font-family:var(--font-body); font-weight:600; flex-shrink:0;}
+
+  .warning-banner{
+    display:none;
+    position:fixed;
+    top:18px; left:50%; transform:translateX(-50%);
+    background:var(--red);
+    color:#fff;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    padding:10px 18px;
+    border-radius:8px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.4);
+    z-index:999;
+    letter-spacing:.02em;
+  }
+
+  @media(max-width:520px){
+    .card{padding:26px 20px;}
+    .quiz-head{flex-direction:column; gap:6px;}
+    .student-tag{text-align:left;}
+    .score-block{flex-direction:column; align-items:flex-start; gap:10px;}
+    .footer-sig{flex-direction:column; align-items:flex-start;}
+    .score-num{font-size:44px;}
+  }
+  @media(max-width:360px){
+    .card{padding:20px 16px;}
+    .stats{grid-template-columns:1fr;}
+    .rules{padding:14px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="warning-banner" id="warningBanner">⚠ Evento registrado: se detectó una acción no permitida</div>
+
+<div class="stage">
+  <div class="card">
+
+    <!-- SCREEN 0: NOMBRE -->
+    <div class="screen active" id="screen-name">
+      <div class="eyebrow"><span class="dot"></span><span class="eyebrow-text">La energía en los procesos de la vida diaria</span></div>
+      <h1>El universo de las <span>fuerzas</span>: interacción y movimiento</h1>
+      <p class="subtitle">Cuestionario interactivo de 15 preguntas sobre la infografía de fuerzas. Ingresa tu nombre para comenzar.</p>
+
+      <ul class="rules">
+        <li>Las preguntas de teoría tienen <strong>1 minuto</strong> y las preguntas con cálculo numérico <strong>1 minuto con 15 segundos</strong>. Si el tiempo se agota, se pasa a la siguiente y ya no podrás volver.</li>
+        <li>Las preguntas y sus opciones aparecen en <strong>orden aleatorio</strong> para cada alumno.</li>
+        <li>No podrás regresar a preguntas anteriores.</li>
+        <li>Evita cambiar de pestaña o de app, copiar o pegar texto: <strong>estas acciones se registran</strong> y se reportan al final.</li>
+      </ul>
+
+      <label class="field-label" for="studentName">Nombre completo del alumno</label>
+      <input type="text" id="studentName" placeholder="Escribe tu nombre y apellido">
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="startBtn">Comenzar cuestionario →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 1: QUIZ -->
+    <div class="screen" id="screen-quiz">
+      <div class="quiz-head">
+        <div class="qcount">PREGUNTA <b id="qNum">1</b> / 15 <span id="qTypeTag" style="color:var(--muted);"></span></div>
+        <div class="student-tag"><b id="quizStudentName">—</b>alumno(a)</div>
+      </div>
+
+      <div class="dyno">
+        <div class="dyno-row">
+          <div class="dyno-cap"></div>
+          <div class="dyno-tube"><div class="dyno-fill" id="timerFill"></div></div>
+          <div class="dyno-num" id="timerNum">60s</div>
+        </div>
+      </div>
+
+      <div class="qtext" id="qText">—</div>
+      <div class="options" id="qOptions"></div>
+    </div>
+
+    <!-- SCREEN 2: RESULTADOS -->
+    <div class="screen" id="screen-results">
+      <div class="eyebrow"><span class="dot"></span><span class="eyebrow-text">Resultados finales</span></div>
+      <h1>Cuestionario completado</h1>
+      <p class="subtitle">Estos son los resultados registrados para este intento.</p>
+
+      <div class="score-block">
+        <div class="score-num" id="finalScore">0.0<small>/10</small></div>
+        <div class="score-meta">
+          <b id="finalName">—</b>
+          <span>La energía en los procesos de la vida diaria</span>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat ok">
+          <div class="n" id="statCorrect">0 / 15</div>
+          <div class="l">Respuestas correctas</div>
+        </div>
+        <div class="stat fraud">
+          <div class="n" id="statFraud">0</div>
+          <div class="l">Intentos de fraude detectados</div>
+        </div>
+      </div>
+
+      <ul class="rules" style="margin-bottom:0;">
+        <li>📸 Toma una <strong>captura de pantalla</strong> de esta pantalla de resultados.</li>
+        <li>Súbela a <strong>Classroom</strong> en la tarea correspondiente.</li>
+        <li>Guárdala para <strong>mostrarla al profesor</strong> junto con el resto de tu trabajo de clase.</li>
+      </ul>
+
+      <div class="footer-sig">
+        <span>Cuestionario generado a partir de la infografía «El universo de las fuerzas»</span>
+        <b>Prof. Adrián CruzH</b>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   BANCO DE PREGUNTAS — basado únicamente en la infografía
+   ========================================================= */
+const QUESTION_BANK = [
+  {
+    text: "Según la infografía, ¿qué es una fuerza?",
+    options: [
+      { t: "Una interacción entre dos cuerpos que puede cambiar su movimiento o deformarlos", c: true },
+      { t: "Una propiedad que solo poseen los objetos que ya están en movimiento", c: false },
+      { t: "La energía almacenada por un cuerpo mientras permanece en reposo", c: false },
+      { t: "La resistencia que ofrece un material al cambio de temperatura", c: false },
+      { t: "Un tipo de energía potencial generada exclusivamente por la gravedad", c: false }
+    ]
+  },
+  {
+    text: "En la representación vectorial de una fuerza, el tamaño de la flecha representa...",
+    options: [
+      { t: "El sentido de la fuerza", c: false },
+      { t: "El punto de aplicación", c: false },
+      { t: "La magnitud, es decir, el tamaño del efecto o valor numérico", c: true },
+      { t: "La dirección, o línea sobre la que actúa", c: false },
+      { t: "La resultante de todas las fuerzas del sistema", c: false }
+    ]
+  },
+  {
+    text: "La punta de la flecha en un vector de fuerza indica hacia dónde apunta la fuerza. ¿Cómo se llama este elemento?",
+    options: [
+      { t: "Magnitud", c: false },
+      { t: "Punto de aplicación", c: false },
+      { t: "Dirección", c: false },
+      { t: "Sentido", c: true },
+      { t: "Equilibrante", c: false }
+    ]
+  },
+  {
+    text: "Las fuerzas por contacto requieren que los cuerpos se toquen físicamente. ¿Cuál de las siguientes es un ejemplo de este tipo de fuerza?",
+    options: [
+      { t: "La gravedad entre la Tierra y la Luna", c: false },
+      { t: "La atracción de un imán sobre un clip a distancia", c: false },
+      { t: "La fricción entre un zapato y el suelo", c: true },
+      { t: "La fuerza eléctrica entre dos cargas separadas", c: false },
+      { t: "La fuerza magnética que orienta una brújula", c: false }
+    ]
+  },
+  {
+    text: "¿Cuál de estas fuerzas actúa sin que exista contacto físico entre los cuerpos, según la infografía?",
+    options: [
+      { t: "La tensión de una cuerda", c: false },
+      { t: "El empuje que se ejerce al lanzar un objeto", c: false },
+      { t: "La gravedad que atrae la manzana hacia el árbol", c: true },
+      { t: "La fricción entre dos superficies", c: false },
+      { t: "La fuerza normal de una mesa sobre un libro", c: false }
+    ]
+  },
+  {
+    text: "¿Qué instrumento, basado en la Ley de Hooke, se utiliza para medir la fuerza mediante el estiramiento de un resorte?",
+    options: [
+      { t: "El barómetro", c: false },
+      { t: "El dinamómetro", c: true },
+      { t: "El voltímetro", c: false },
+      { t: "El manómetro", c: false },
+      { t: "El termómetro de resorte", c: false }
+    ]
+  },
+  {
+    text: "¿Cuál es la unidad de medida de la fuerza mencionada en la infografía?",
+    options: [
+      { t: "El Joule (J)", c: false },
+      { t: "El Pascal (Pa)", c: false },
+      { t: "El Watt (W)", c: false },
+      { t: "El Newton (N)", c: true },
+      { t: "El Kelvin (K)", c: false }
+    ]
+  },
+  {
+    text: "De las 4 fuerzas fundamentales de la naturaleza, ¿cuál es responsable del peso de los cuerpos y de la órbita de los planetas?",
+    options: [
+      { t: "La fuerza electromagnética", c: false },
+      { t: "La fuerza nuclear fuerte", c: false },
+      { t: "La fuerza nuclear débil", c: false },
+      { t: "La fuerza gravitacional", c: true },
+      { t: "La fuerza de fricción", c: false }
+    ]
+  },
+  {
+    text: "¿Qué fuerza fundamental mantiene unidos a los protones y neutrones dentro del núcleo atómico?",
+    options: [
+      { t: "La fuerza gravitacional", c: false },
+      { t: "La fuerza electromagnética", c: false },
+      { t: "La fuerza nuclear fuerte", c: true },
+      { t: "La fuerza nuclear débil", c: false },
+      { t: "La fuerza normal", c: false }
+    ]
+  },
+  {
+    text: "En un sistema de fuerzas, ¿qué representa la fuerza 'equilibrante'?",
+    options: [
+      { t: "El efecto neto que produce el conjunto de fuerzas sobre el cuerpo", c: false },
+      { t: "Una fuerza de igual magnitud y dirección opuesta a la resultante, que balancea el sistema", c: true },
+      { t: "La suma de todas las fuerzas sin considerar su dirección", c: false },
+      { t: "La fuerza que siempre produce la mayor aceleración posible", c: false },
+      { t: "La fuerza de fricción que aparece al iniciar el movimiento", c: false }
+    ]
+  },
+  {
+    text: "Dos fuerzas colineales de 3 N y 5 N actúan en el mismo sentido sobre un cuerpo. ¿Cuál es la magnitud de la fuerza resultante?",
+    type: "numeric",
+    options: [
+      { t: "2 N", c: false },
+      { t: "15 N", c: false },
+      { t: "8 N", c: true },
+      { t: "0 N", c: false },
+      { t: "5 N", c: false }
+    ]
+  },
+  {
+    text: "En un juego de tira y afloja, una persona ejerce 7 N y la otra 4 N en sentidos contrarios sobre la misma línea. ¿Cuál es la resultante?",
+    type: "numeric",
+    options: [
+      { t: "11 N", c: false },
+      { t: "7 N", c: false },
+      { t: "4 N", c: false },
+      { t: "3 N", c: true },
+      { t: "0 N", c: false }
+    ]
+  },
+  {
+    text: "Sobre una caja actúan tres fuerzas colineales: 6 N y 3 N hacia la derecha, y 2 N hacia la izquierda. Considerando los sentidos, ¿cuál es la resultante?",
+    type: "numeric",
+    options: [
+      { t: "1 N", c: false },
+      { t: "11 N", c: false },
+      { t: "7 N, hacia la derecha", c: true },
+      { t: "5 N, hacia la izquierda", c: false },
+      { t: "0 N, el sistema está en equilibrio", c: false }
+    ]
+  },
+  {
+    text: "Cuando dos fuerzas actúan de forma perpendicular entre sí sobre un mismo cuerpo, ¿qué método se usa para calcular la magnitud de la resultante?",
+    type: "numeric",
+    options: [
+      { t: "La suma algebraica directa de ambas magnitudes", c: false },
+      { t: "La diferencia entre las dos magnitudes", c: false },
+      { t: "El teorema de Pitágoras", c: true },
+      { t: "La Ley de Hooke", c: false },
+      { t: "Una simple regla de tres", c: false }
+    ]
+  },
+  {
+    text: "Según la Tercera Ley de Newton (acción y reacción) presentada en la infografía, la fuerza de reacción...",
+    options: [
+      { t: "Tiene igual magnitud, dirección contraria y sentido opuesto, pero actúa sobre el mismo cuerpo que la acción", c: false },
+      { t: "Tiene menor magnitud que la fuerza de acción", c: false },
+      { t: "Tiene igual magnitud, dirección contraria y sentido opuesto, pero actúa sobre un cuerpo diferente al de la acción", c: true },
+      { t: "Solo aparece cuando existe fricción entre los cuerpos", c: false },
+      { t: "Se anula siempre con la fuerza de acción, dando como resultado cero", c: false }
+    ]
+  }
+];
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+let studentName = "";
+let quizQuestions = [];
+let currentIndex = 0;
+let correctCount = 0;
+let timerInterval = null;
+let timeLeft = 60;
+let currentQTime = 60;
+let fraudCount = 0;
+let answerLocked = false;
+const TIME_THEORY = 60;
+const TIME_NUMERIC = 75;
+
+/* Utilidad: mezclar array (Fisher-Yates) */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* =========================================================
+   MEDIDAS ANTIFRAUDE
+   ========================================================= */
+function flagEvent(){
+  fraudCount++;
+  showWarning();
+}
+function showWarning(){
+  const banner = document.getElementById('warningBanner');
+  banner.style.display = 'block';
+  clearTimeout(showWarning._t);
+  showWarning._t = setTimeout(()=>{ banner.style.display = 'none'; }, 1800);
+}
+
+/* Todas las medidas antifraude solo se activan durante la pantalla del cuestionario,
+   así el alumno puede escribir/seleccionar libremente su nombre antes de empezar. */
+document.addEventListener('contextmenu', e => {
+  if (!quizIsActive()) return;
+  e.preventDefault();
+  flagEvent();
+});
+document.addEventListener('copy', e => {
+  if (!quizIsActive()) return;
+  e.preventDefault();
+  flagEvent();
+});
+document.addEventListener('cut', e => {
+  if (!quizIsActive()) return;
+  e.preventDefault();
+  flagEvent();
+});
+document.addEventListener('paste', e => {
+  if (!quizIsActive()) return;
+  e.preventDefault();
+  flagEvent();
+});
+document.addEventListener('keydown', e => {
+  if (!quizIsActive()) return;
+  const k = e.key.toLowerCase();
+  const blockedCombo = (e.ctrlKey || e.metaKey) && ['c','v','x','u','s','p','a'].includes(k);
+  if (blockedCombo || k === 'f12' || (e.ctrlKey && e.shiftKey && (k==='i'||k==='j'||k==='c'))) {
+    e.preventDefault();
+    flagEvent();
+  }
+});
+/* Cambiar de pestaña o minimizar (funciona igual en computadora y en celular) */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && quizIsActive()) flagEvent();
+});
+/* Salir de la app/ventana del navegador (ej. cambiar de app en el teléfono) */
+window.addEventListener('blur', () => {
+  if (quizIsActive()) flagEvent();
+});
+/* Nota: no se usa la API de pantalla completa como señal de fraude, porque en
+   Safari/iOS y en varios navegadores de Android su comportamiento es inconsistente
+   (la barra de direcciones aparece/desaparece sola) y generaba falsos positivos. */
+function quizIsActive(){
+  return document.getElementById('screen-quiz').classList.contains('active');
+}
+
+/* =========================================================
+   FLUJO DE PANTALLAS
+   ========================================================= */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  const nameInput = document.getElementById('studentName');
+  const name = nameInput.value.trim();
+  if (!name){
+    nameInput.style.borderColor = 'var(--red)';
+    nameInput.placeholder = 'Este campo es obligatorio';
+    return;
+  }
+  studentName = name;
+  document.getElementById('quizStudentName').textContent = studentName;
+
+  // Preparar preguntas: orden aleatorio de preguntas y de opciones dentro de cada una
+  quizQuestions = shuffle(QUESTION_BANK).map(q => ({
+    text: q.text,
+    type: q.type || "theory",
+    options: shuffle(q.options)
+  }));
+
+  currentIndex = 0;
+  correctCount = 0;
+
+  showScreen('screen-quiz');
+  renderQuestion();
+});
+
+function renderQuestion(){
+  answerLocked = false;
+  const q = quizQuestions[currentIndex];
+  document.getElementById('qNum').textContent = currentIndex + 1;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('qTypeTag').textContent = q.type === "numeric" ? "· CÁLCULO (75s)" : "· TEORÍA (60s)";
+
+  const letters = ['A','B','C','D','E'];
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="letter">${letters[i]}</span><span class="opt-text">${opt.t}</span>`;
+    btn.addEventListener('click', () => selectAnswer(opt, btn));
+    optWrap.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  const q = quizQuestions[currentIndex];
+  currentQTime = q.type === "numeric" ? TIME_NUMERIC : TIME_THEORY;
+  timeLeft = currentQTime;
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0){
+      clearInterval(timerInterval);
+      if (!answerLocked) advance(false);
+    }
+  }, 1000);
+}
+
+function updateTimerUI(){
+  const fill = document.getElementById('timerFill');
+  const num = document.getElementById('timerNum');
+  const pct = Math.max(0, (timeLeft / currentQTime) * 100);
+  fill.style.width = pct + '%';
+  num.textContent = timeLeft + 's';
+  fill.classList.remove('warn','danger');
+  if (timeLeft <= 10) fill.classList.add('danger');
+  else if (timeLeft <= 25) fill.classList.add('warn');
+}
+
+function selectAnswer(opt, btnEl){
+  if (answerLocked) return;
+  answerLocked = true;
+  clearInterval(timerInterval);
+
+  const allBtns = document.querySelectorAll('#qOptions .opt');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (opt.c) {
+    correctCount++;
+    btnEl.classList.add('correct');
+  } else {
+    btnEl.classList.add('wrong');
+    // mostrar cuál era la correcta
+    const q = quizQuestions[currentIndex];
+    const letters = ['A','B','C','D','E'];
+    q.options.forEach((o, i) => {
+      if (o.c) allBtns[i].classList.add('correct');
+    });
+  }
+
+  setTimeout(() => advance(true), 700);
+}
+
+function advance(alreadyHandled){
+  if (!alreadyHandled){
+    // se acabó el tiempo sin responder: mostrar correcta brevemente
+    const allBtns = document.querySelectorAll('#qOptions .opt');
+    allBtns.forEach(b => b.disabled = true);
+    const q = quizQuestions[currentIndex];
+    q.options.forEach((o, i) => { if (o.c) allBtns[i].classList.add('correct'); });
+  }
+  setTimeout(() => {
+    currentIndex++;
+    if (currentIndex >= quizQuestions.length){
+      finishQuiz();
+    } else {
+      renderQuestion();
+    }
+  }, alreadyHandled ? 0 : 700);
+}
+
+function finishQuiz(){
+  clearInterval(timerInterval);
+  const scoreOutOf10 = (correctCount / quizQuestions.length) * 10;
+  document.getElementById('finalName').textContent = studentName;
+  document.getElementById('finalScore').innerHTML = scoreOutOf10.toFixed(1) + '<small>/10</small>';
+  document.getElementById('statCorrect').textContent = correctCount + ' / ' + quizQuestions.length;
+  document.getElementById('statFraud').textContent = fraudCount;
+  showScreen('screen-results');
+}
+</script>
+</body>
+</html>
