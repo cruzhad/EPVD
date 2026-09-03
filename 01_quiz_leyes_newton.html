@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detectives del Movimiento - Quiz: Leyes de Newton</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; min-height: 100vh; background: linear-gradient(135deg, #eaf2fb 0%, #e6ecf5 50%, #eef6fd 100%); padding: 1rem; }
+        .mono { font-family: 'Space Mono', monospace; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { background: white; border-radius: 1.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.1); padding: 2rem; margin-bottom: 1.5rem; border: 4px solid #2563a8; animation: fadeIn 0.5s ease-in; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .header h1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #1e3a63, #0e7490); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem; }
+        .header p { color: #6b7280; font-size: 1.05rem; }
+        .header .subtitle { color: #1e3a63; font-weight: 600; margin-top: 0.25rem; }
+        .header-icon { background: linear-gradient(135deg, #2563a8, #0e7490); padding: 1rem; border-radius: 1rem; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; }
+        .security-banner { background: #fee2e2; border: 3px solid #ef4444; border-radius: 0.75rem; padding: 1rem 1.5rem; margin-bottom: 1.5rem; color: #991b1b; font-weight: 600; text-align: center; font-size: 0.95rem; }
+        .quiz-container { background: white; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 1.75rem; text-align: center; }
+        .quiz-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .quiz-title { font-size: 1.9rem; font-weight: 700; color: #1f2937; margin-bottom: 0.75rem; }
+        .quiz-subtitle { font-size: 1.1rem; color: #6b7280; margin-bottom: 1.5rem; }
+        .instructions-box { background: #eff6ff; border: 4px solid #2563a8; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; text-align: left; }
+        .instructions-box h3 { font-weight: 700; font-size: 1.1rem; color: #1f2937; margin-bottom: 0.75rem; }
+        .instructions-box ul { list-style: none; padding-left: 0; }
+        .instructions-box li { color: #374151; margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative; font-size: 0.98rem; }
+        .instructions-box li:before { content: "✓"; position: absolute; left: 0; font-weight: 700; color: #1e3a63; }
+        .name-input-box { background: #dbeafe; border: 4px solid #2563a8; border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1.5rem; }
+        .name-input-box p { color: #374151; font-size: 1.05rem; margin-bottom: 0.5rem; }
+        .name-input-box .example { color: #6b7280; margin-bottom: 0.25rem; font-size: 0.95rem; }
+        .name-input-box .example-text { font-size: 1.05rem; font-weight: 700; color: #1e3a63; }
+        .name-input { width: 100%; padding: 1rem; font-size: 1.1rem; border: 4px solid #d1d5db; border-radius: 0.75rem; margin-bottom: 1.5rem; font-family: 'Poppins', sans-serif; }
+        .name-input:focus { outline: none; border-color: #1e3a63; }
+        .btn-primary { background: linear-gradient(135deg, #2563a8, #1e3a63); color: white; padding: 1rem 2.5rem; border-radius: 0.75rem; font-size: 1.15rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.3s ease; width: 100%; }
+        .btn-primary:hover { box-shadow: 0 15px 30px rgba(30,58,99,0.3); }
+        .btn-primary:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
+        .quiz-progress { margin-bottom: 1.25rem; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .progress-text { color: #6b7280; font-weight: 600; font-size: 0.95rem; }
+        .difficulty-tag { font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.55rem; border-radius: 9999px; margin-left: 0.5rem; text-transform: uppercase; letter-spacing: 0.02em; }
+        .difficulty-tag.facil { background: #d1fae5; color: #059669; }
+        .difficulty-tag.media { background: #fef3c7; color: #b45309; }
+        .difficulty-tag.dificil { background: #fee2e2; color: #b91c1c; }
+        .timer { display: flex; align-items: center; gap: 0.4rem; }
+        .timer-text { font-weight: 700; font-size: 1.15rem; color: #1f2937; }
+        .timer-text.warning { color: #ef4444; animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+        .progress-bar { width: 100%; background: #e5e7eb; border-radius: 9999px; height: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #2563a8, #0e7490); transition: width 0.3s ease; }
+        .question-box { margin-bottom: 1.5rem; }
+        .question-text { font-size: 1.2rem; font-weight: 700; color: #1f2937; margin-bottom: 1.25rem; text-align: left; line-height: 1.4; }
+        .options-grid { display: flex; flex-direction: column; gap: 0.7rem; }
+        .option-button { width: 100%; padding: 1rem; border-radius: 0.75rem; text-align: left; font-size: 1rem; font-weight: 600; border: 2px solid #e5e7eb; cursor: pointer; transition: all 0.2s ease; background: #f9fafb; color: #1f2937; }
+        .option-button:hover { background: #eff6ff; border-color: #2563a8; }
+        .option-button.selected { background: linear-gradient(135deg, #2563a8, #1e3a63); color: white; border-color: #1e3a63; box-shadow: 0 8px 20px rgba(30,58,99,0.3); }
+        .results-card { text-align: center; }
+        .results-icon { font-size: 4.5rem; margin-bottom: 1rem; }
+        .results-title { font-size: 1.9rem; font-weight: 700; color: #1f2937; margin-bottom: 1rem; }
+        .score-card { background: linear-gradient(135deg, #2563a8, #1e3a63); color: white; border-radius: 1rem; padding: 1.75rem; margin: 0 auto 1.25rem; border: 4px solid #1e3a63; }
+        .student-info { background: rgba(255,255,255,0.2); border-radius: 0.75rem; padding: 0.85rem; margin-bottom: 1rem; }
+        .student-info .label { font-size: 1.1rem; margin-bottom: 0.35rem; font-weight: 600; }
+        .student-info .name { font-size: 1.5rem; font-weight: 700; }
+        .score-display { background: rgba(255,255,255,0.2); border-radius: 0.75rem; padding: 1.25rem; }
+        .score-display .label { font-size: 1.25rem; margin-bottom: 0.4rem; }
+        .score-display .score { font-size: 4rem; font-weight: 700; }
+        .score-display .fraction { font-size: 1.1rem; margin-top: 0.4rem; }
+        .score-display .date { font-size: 0.8rem; margin-top: 0.85rem; opacity: 0.9; }
+        .instructions-card { margin: 1.75rem auto 0; }
+        .instructions-card h3 { font-size: 1.3rem; font-weight: 700; color: #1f2937; text-align: center; margin-bottom: 1.25rem; }
+        .capture-instructions { background: #dbeafe; border: 4px solid #2563a8; border-radius: 0.75rem; padding: 1.25rem; }
+        .capture-header { display: flex; gap: 0.85rem; align-items: flex-start; text-align: left; }
+        .capture-icon { font-size: 1.75rem; flex-shrink: 0; }
+        .capture-content h4 { font-weight: 700; font-size: 1.25rem; color: #1f2937; margin-bottom: 0.6rem; }
+        .capture-content p { color: #374151; font-size: 1rem; margin-bottom: 0.85rem; }
+        .capture-content ol { list-style-position: inside; color: #374151; font-size: 1rem; margin-bottom: 1.25rem; }
+        .capture-content ol li { font-weight: 600; margin-bottom: 0.6rem; }
+        .classroom-box { background: white; padding: 1rem; border-radius: 0.5rem; border: 2px solid #2563a8; }
+        .classroom-box .title { font-weight: 700; font-size: 1.1rem; color: #1f2937; margin-bottom: 0.6rem; text-align: center; }
+        .classroom-box .alert { background: #dbeafe; padding: 0.85rem; border-radius: 0.5rem; text-align: center; }
+        .classroom-box .alert p { color: #374151; margin-bottom: 0.4rem; font-size: 0.95rem; }
+        .classroom-box .alert strong { color: #1e3a63; }
+        .summary-section { margin: 1.75rem auto 0; text-align: left; }
+        .summary-section h3 { font-size: 1.25rem; font-weight: 700; color: #1f2937; margin-bottom: 0.85rem; }
+        .summary-grid { display: flex; flex-direction: column; gap: 0.6rem; }
+        .summary-item { padding: 0.85rem; border-radius: 0.5rem; border-left: 4px solid; }
+        .summary-item.correct { background: #d1fae5; border-color: #10b981; }
+        .summary-item.incorrect { background: #fee2e2; border-color: #ef4444; }
+        .summary-item-content { display: flex; align-items: center; gap: 0.6rem; }
+        .summary-icon.correct { color: #10b981; }
+        .summary-icon.incorrect { color: #ef4444; }
+        .summary-text { color: #1f2937; font-size: 0.95rem; }
+        .footer { max-width: 800px; margin: 2rem auto 0; text-align: center; color: #6b7280; font-size: 0.9rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.4rem; }
+            .header-icon { width: 56px; height: 56px; font-size: 2rem; }
+            .quiz-title { font-size: 1.5rem; }
+            .score-display .score { font-size: 3.2rem; }
+            .question-text { font-size: 1.05rem; }
+        }
+
+        /* ===== MEDIDAS ANTIFRAUDE / ANTI-COPIA ===== */
+        html, body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        #student-name { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+        .security-warning-overlay { position: fixed; inset: 0; background: rgba(17, 24, 39, 0.92); color: white; display: none; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 2rem; z-index: 9999; }
+        .security-warning-overlay.show { display: flex; }
+        .security-warning-overlay h2 { font-size: 1.6rem; margin-bottom: 1rem; }
+        .security-warning-overlay p { font-size: 1.05rem; max-width: 450px; margin-bottom: 1.5rem; }
+        .exit-counter { position: fixed; bottom: 1rem; right: 1rem; background: #1f2937; color: white; padding: 0.5rem 0.85rem; border-radius: 0.5rem; font-size: 0.8rem; font-family: 'Space Mono', monospace; opacity: 0.85; z-index: 100; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="security-warning-overlay" id="security-overlay">
+        <h2>⚠️ Ventana fuera de foco</h2>
+        <p>Se detectó que saliste de esta pestaña o app durante varios segundos. Este evento fue registrado. Regresa para continuar.</p>
+        <button class="btn-primary" style="width:auto; padding: 0.85rem 2rem;" onclick="dismissWarning()">Entendido, continuar</button>
+    </div>
+
+    <div class="exit-counter" id="exit-counter" style="display:none;">Salidas detectadas: <span id="exit-count">0</span></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <h1>Detectives del Movimiento</h1>
+                    <p>Quiz de razonamiento: Primera y Tercera Ley de Newton</p>
+                    <p class="subtitle">Guía de autoestudio — Leyes de Newton</p>
+                </div>
+                <div class="header-icon">🕵️‍♂️</div>
+            </div>
+        </div>
+
+        <div class="security-banner">
+            🔒 Este quiz cuenta con medidas de seguridad: no se permite copiar, pegar, seleccionar texto ni usar clic derecho. Las salidas prolongadas de la pestaña/app quedan registradas. Cada alumno recibe una combinación distinta de preguntas.
+        </div>
+
+        <div id="quiz-start" class="quiz-container">
+            <div class="quiz-icon">🔍</div>
+            <h2 class="quiz-title">Quiz — Leyes de Newton</h2>
+            <p class="quiz-subtitle">12 preguntas de razonamiento (opción múltiple)</p>
+            <div class="instructions-box">
+                <h3>📋 Instrucciones:</h3>
+                <ul>
+                    <li>Tendrás entre 45 y 75 segundos por pregunta, según su dificultad</li>
+                    <li>Las preguntas, sus opciones y su orden son distintos para cada alumno</li>
+                    <li>Cada pregunta tiene 6 opciones; solo una es correcta</li>
+                    <li>No son preguntas de memorizar una fórmula: piensa como detective, con la misma lógica que usaste en tu guía</li>
+                    <li>Solo puedes realizar el quiz UNA vez</li>
+                    <li>Tu calificación se mostrará al final</li>
+                </ul>
+            </div>
+            <button class="btn-primary" onclick="showNameInput()">Comenzar Quiz</button>
+        </div>
+
+        <div id="name-input" class="quiz-container" style="display: none;">
+            <h2 class="quiz-title" style="font-size: 1.5rem; margin-bottom: 1.25rem;">Ingresa tu nombre completo</h2>
+            <div class="name-input-box">
+                <p style="text-align: center;"><strong>Importante:</strong> Escribe tu nombre comenzando por tus apellidos</p>
+                <p class="example" style="text-align: center;">Ejemplo:</p>
+                <p class="example-text mono" style="text-align: center;">García Martínez Juan Carlos</p>
+            </div>
+            <input type="text" id="student-name" class="name-input" placeholder="Apellidos Nombre(s)" />
+            <button class="btn-primary" onclick="startQuiz()">Iniciar Quiz</button>
+        </div>
+
+        <div id="quiz-questions" class="quiz-container" style="display: none;">
+            <div class="quiz-progress">
+                <div class="progress-header">
+                    <span class="progress-text" id="progress-text">Pregunta 1 de 12<span class="difficulty-tag" id="difficulty-tag"></span></span>
+                    <div class="timer"><span style="font-size: 1.1rem;">⏱️</span><span class="timer-text" id="timer">60s</span></div>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width: 8.3%"></div></div>
+            </div>
+            <div class="question-box">
+                <h3 class="question-text" id="question-text"></h3>
+                <div class="options-grid" id="options-container"></div>
+            </div>
+            <div>
+                <button class="btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+            </div>
+        </div>
+
+        <div id="quiz-results" class="quiz-container" style="display: none;">
+            <div class="results-card">
+                <div class="results-icon">🏆</div>
+                <h2 class="results-title">¡Investigación Completada!</h2>
+                <div class="score-card">
+                    <div class="student-info"><p class="label">Detective:</p><p class="name" id="result-student-name"></p></div>
+                    <div class="score-display">
+                        <p class="label">Tu calificación:</p>
+                        <p class="score" id="final-score">0.0</p>
+                        <p class="fraction" id="score-fraction">0 de 12 correctas</p>
+                        <p class="date" id="result-date"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="instructions-card">
+                <h3>📸 Registra tu resultado:</h3>
+                <div class="capture-instructions">
+                    <div class="capture-header">
+                        <span class="capture-icon">📱</span>
+                        <div class="capture-content" style="flex: 1;">
+                            <h4>Captura de Pantalla</h4>
+                            <p>Sigue estos pasos para registrar tu calificación:</p>
+                            <ol>
+                                <li>Toma una captura de pantalla de esta página completa</li>
+                                <li>Verifica que se vea claramente tu nombre y calificación</li>
+                                <li>Sube tu captura a Google Classroom en la tarea correspondiente</li>
+                            </ol>
+                            <div class="classroom-box">
+                                <p class="title">🎯 Entrega ÚNICAMENTE por Classroom</p>
+                                <div class="alert"><p>No envíes por WhatsApp ni correo electrónico.</p><p><strong>Solo Google Classroom es válido.</strong></p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="summary-section">
+                <h3>📊 Resumen de tus respuestas:</h3>
+                <div class="summary-grid" id="summary-container"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Detectives del Movimiento — Primera y Tercera Ley de Newton | Quiz de autoestudio</p>
+        </div>
+    </div>
+
+    <script>
+        // ===================================================================
+        // BANCO DE REACTIVOS POR CASILLA
+        // Cada "slot" representa un tema de razonamiento tomado del documento
+        // "Detectives del Movimiento" (solo Ley 1 y Ley 3, tal como en la guía).
+        // Cada slot tiene varias "variants": formulaciones distintas de la
+        // MISMA idea (mismo nivel de razonamiento, distinto planteamiento),
+        // igual que se pide reforzar en la guía con ejemplos propios.
+        // Al iniciar el quiz se elige UNA variante aleatoria por slot para
+        // cada alumno, y luego se revuelve el orden de los 12 slots y el de
+        // las 6 opciones de cada pregunta. En cada variante, la opción
+        // correcta es SIEMPRE el índice 0 del arreglo "options" antes de
+        // revolver. "time" y "difficulty" fijan el cronómetro según
+        // dificultad: fácil = 45s, media = 60s, difícil = 75s.
+        // ===================================================================
+
+        const questionBank = [
+            // --- LEY 1 (Inercia) - Objeto en reposo ---
+            { time: 45, difficulty: 'facil', variants: [
+                { question: "¿Por qué un libro que dejas sobre la mesa no se mueve por sí solo?", options: [
+                    "Porque un objeto en reposo permanece en reposo a menos que una fuerza actúe sobre él",
+                    "Porque los libros son objetos pesados y eso los inmoviliza siempre",
+                    "Porque el libro pierde energía con el tiempo hasta detenerse por completo",
+                    "Porque la mesa lo empuja constantemente hacia abajo con más fuerza que hacia los lados",
+                    "Porque ningún objeto puede moverse si no tiene baterías o motor",
+                    "Porque el aire alrededor lo mantiene fijo en su lugar"
+                ]},
+                { question: "Un vaso está quieto sobre la barra de la cocina y nadie lo toca. ¿Qué explica que siga ahí, exactamente en el mismo lugar, horas después?", options: [
+                    "Que un objeto en reposo se mantiene en reposo mientras no actúe sobre él una fuerza externa",
+                    "Que los vasos de vidrio tienen la propiedad natural de quedarse inmóviles",
+                    "Que la gravedad detiene por completo cualquier posibilidad de movimiento",
+                    "Que el vaso, al estar vacío, no puede desplazarse bajo ninguna circunstancia",
+                    "Que el aire de la cocina ejerce una fuerza que lo mantiene fijo",
+                    "Que todos los objetos tienden naturalmente a detenerse solos, tengan o no fuerzas actuando"
+                ]},
+                { question: "Una mochila queda apoyada en el piso del salón sin que nadie la mueva durante todo el recreo. ¿Cuál es la mejor explicación de por qué sigue en el mismo sitio?", options: [
+                    "Porque, al no actuar ninguna fuerza sobre ella, un objeto en reposo se queda en reposo",
+                    "Porque las mochilas, por su forma, no pueden deslizarse sobre el piso",
+                    "Porque el piso absorbe cualquier fuerza que pudiera moverla",
+                    "Porque los objetos con contenido pesado dejan de obedecer las leyes del movimiento",
+                    "Porque el tiempo transcurrido hace que la mochila pierda la capacidad de moverse",
+                    "Porque siempre existe alguna fuerza invisible sosteniendo los objetos inmóviles"
+                ]}
+            ]},
+
+            // --- LEY 1 (Inercia) - Objeto en movimiento continúa ---
+            { time: 60, difficulty: 'media', variants: [
+                { question: "Si nada empuja ni jala a un objeto que ya está en movimiento, ¿qué le sucederá con el paso del tiempo?", options: [
+                    "Seguirá moviéndose en línea recta a la misma velocidad, a menos que algo lo detenga",
+                    "Se detendrá por sí solo, porque esa es su tendencia natural con el tiempo",
+                    "Acelerará cada vez más rápido sin ninguna razón externa",
+                    "Cambiará de dirección por sí mismo después de un rato",
+                    "Su velocidad dependerá únicamente del color o del material del objeto",
+                    "Se detendrá en cuanto deje de estar a la vista de alguien"
+                ]},
+                { question: "Un objeto flota en el espacio profundo, muy lejos de cualquier planeta o estrella, sin que ninguna fuerza actúe sobre él. Con el paso del tiempo, ¿qué le pasará?", options: [
+                    "Seguirá moviéndose exactamente igual, en línea recta y a la misma velocidad",
+                    "Se irá deteniendo poco a poco hasta quedar completamente quieto",
+                    "Acelerará cada vez más, aunque nada lo empuje",
+                    "Empezará a girar sobre sí mismo sin ninguna causa",
+                    "Cambiará de dirección de manera aleatoria conforme pase el tiempo",
+                    "Su comportamiento no puede explicarse con las leyes del movimiento"
+                ]},
+                { question: "Piensa en una canica que ruedas sobre una superficie perfectamente lisa, sin fricción y sin nada que la toque después. ¿Qué esperarías que ocurra?", options: [
+                    "Que continúe rodando en línea recta y a velocidad constante indefinidamente",
+                    "Que se detenga sola después de recorrer cierta distancia, sin ninguna causa externa",
+                    "Que empiece a acelerar por sí misma mientras más tiempo pase",
+                    "Que cambie de trayectoria de manera espontánea",
+                    "Que su movimiento dependa solo de su tamaño y no de las fuerzas presentes",
+                    "Que se detenga en el instante exacto en que deja de ser observada"
+                ]}
+            ]},
+
+            // --- LEY 1 (Inercia) - relación masa/carga y resistencia al movimiento ---
+            { time: 60, difficulty: 'media', variants: [
+                { question: "¿Por qué cuesta más poner en movimiento (o detener) un carrito de supermercado lleno que uno vacío?", options: [
+                    "Porque el carrito lleno tiene más masa y por lo tanto más inercia: se resiste más a cambiar su estado de movimiento",
+                    "Porque los carritos vacíos tienen ruedas especiales que giran más fácil",
+                    "Porque el peso extra hace que el piso empuje el carrito en dirección contraria",
+                    "Porque un carrito lleno siempre está siendo frenado por el aire a su alrededor",
+                    "Porque solo influye la forma del carrito, no la cantidad de cosas que lleva",
+                    "Porque los carritos llenos tienen menos fricción con el suelo"
+                ]},
+                { question: "Al cargar tu mochila con muchos libros, notas que te cuesta más trabajo empezar a caminar rápido o detenerte de golpe que cuando la llevas casi vacía. ¿Cuál es la razón?", options: [
+                    "A mayor masa, mayor inercia: cuesta más cambiar el estado de movimiento del sistema mochila-cuerpo",
+                    "Porque los libros generan una fuerza que empuja en sentido contrario al caminar",
+                    "Porque una mochila pesada reduce la fricción entre tus zapatos y el piso",
+                    "Porque el peso de los libros hace que el aire te frene más",
+                    "Porque solo el tamaño de la mochila determina qué tan fácil es moverla, no lo que contiene",
+                    "Porque las mochilas llenas obedecen leyes distintas a las vacías"
+                ]},
+                { question: "Dos cajas idénticas en forma están en el piso: una vacía y otra llena de libros. Si las empujas con la misma fuerza, ¿cuál se pondrá en movimiento con más facilidad y por qué?", options: [
+                    "La vacía, porque tiene menos masa y por lo tanto menos inercia que oponer al cambio de movimiento",
+                    "La llena, porque el peso adicional ayuda a que se deslice mejor sobre el piso",
+                    "Ambas se moverán exactamente igual, porque la fuerza aplicada es la misma en las dos",
+                    "La llena, porque tiene más superficie de contacto con el piso",
+                    "Depende únicamente del material del que estén hechas las cajas, no de su contenido",
+                    "La vacía se quedará quieta porque no tiene suficiente peso para moverse"
+                ]}
+            ]},
+
+            // --- LEY 1 (Inercia) - frenado brusco del cuerpo (auto) ---
+            { time: 60, difficulty: 'media', variants: [
+                { question: "Cuando vas en un auto y este frena de golpe, sientes que \"te jalan hacia adelante\". ¿Qué está pasando realmente con tu cuerpo?", options: [
+                    "Tu cuerpo tiende a seguir moviéndose hacia adelante por inercia, mientras el auto ya se detuvo",
+                    "El auto ejerce una fuerza invisible que te empuja hacia el frente",
+                    "El aire dentro del auto te impulsa hacia adelante al frenar",
+                    "Tu cuerpo pierde peso momentáneamente y por eso se desplaza",
+                    "El cinturón de seguridad es el que provoca que te muevas hacia adelante",
+                    "Es una ilusión óptica que ocurre solo si vas viendo hacia el frente"
+                ]},
+                { question: "Vas de pie en un camión y este frena bruscamente; tu cuerpo se va hacia adelante aunque nadie te empujó. ¿Cuál es la mejor explicación?", options: [
+                    "Tu cuerpo, por inercia, tiende a mantener su movimiento aunque el vehículo ya haya frenado",
+                    "El camión libera una fuerza hacia atrás que te lanza hacia adelante",
+                    "Frenar de golpe genera una corriente de aire que te empuja",
+                    "Tu cuerpo se vuelve más ligero al momento del frenado",
+                    "Los frenos del camión actúan directamente sobre las personas dentro de él",
+                    "Solo ocurre si la persona no está prestando atención al camino"
+                ]},
+                { question: "En una montaña rusa, al frenar de repente en una curva, los pasajeros sienten que su cuerpo \"quiere seguir de frente\". ¿Qué principio explica esta sensación?", options: [
+                    "La inercia: el cuerpo tiende a mantener su movimiento en línea recta aunque el vagón cambie de velocidad o dirección",
+                    "Una fuerza del asiento que empuja a los pasajeros hacia adelante al frenar",
+                    "El aumento repentino de la fuerza de gravedad en las curvas",
+                    "Una corriente de viento que se genera dentro del vagón al frenar",
+                    "La pérdida temporal de peso de los pasajeros durante la curva",
+                    "Un efecto que solo ocurre si el vagón va muy lleno de personas"
+                ]}
+            ]},
+
+            // --- LEY 1 (Inercia) - caso mochila/objeto que sale disparado (frenado brusco de un vehículo) ---
+            { time: 75, difficulty: 'dificil', variants: [
+                { question: "Un ciclista frena de golpe y, aunque él se detiene, su mochila (que no llevaba bien sujeta) sale disparada hacia adelante. ¿Qué ley de Newton explica mejor este caso y por qué?", options: [
+                    "La Primera Ley: la mochila, al no estar sujeta, conserva su movimiento por inercia mientras el ciclista ya frenó",
+                    "La Tercera Ley: la mochila reacciona con una fuerza igual y contraria a la del frenado",
+                    "Ninguna ley de Newton explica este caso, es solo un accidente sin causa física",
+                    "La mochila sale disparada porque el aire la empuja hacia adelante al frenar el ciclista",
+                    "Ocurre porque la bicicleta transmite una fuerza extra hacia la mochila al frenar",
+                    "Sucede porque la mochila, al ser un objeto ligero, no obedece las leyes del movimiento"
+                ]},
+                { question: "En un camión de mudanzas que frena bruscamente, una caja mal amarrada se desliza hacia el frente de la caja del camión. ¿Qué explica este comportamiento?", options: [
+                    "Por inercia, la caja tiende a seguir moviéndose hacia adelante mientras el camión ya redujo su velocidad",
+                    "El camión ejerce una fuerza hacia adelante sobre la caja al momento de frenar",
+                    "La caja se mueve porque pierde peso durante el frenado brusco",
+                    "Es un efecto exclusivo de cajas de cartón y no ocurriría con otros materiales",
+                    "Ocurre porque el piso del camión se inclina levemente al frenar",
+                    "La caja reacciona empujando al camión con la misma fuerza con la que este frenó"
+                ]},
+                { question: "Durante un frenado de emergencia en un autobús, los objetos sueltos sobre el asiento (una botella, un cuaderno) salen disparados hacia el pasillo delantero. ¿Cuál es la explicación correcta?", options: [
+                    "Los objetos, al no estar sujetos, conservan su movimiento por inercia mientras el autobús frena",
+                    "El autobús transmite una fuerza que empuja específicamente a los objetos sueltos hacia adelante",
+                    "Los objetos sueltos generan su propia fuerza de aceleración al momento del frenado",
+                    "Ocurre solo con objetos livianos; los pesados no se moverían en ese mismo frenado",
+                    "El aire que entra por las ventanas es el responsable de mover los objetos",
+                    "Es un fenómeno sin relación con las leyes del movimiento estudiadas"
+                ]}
+            ]},
+
+            // --- LEY 1 (Inercia) - prueba de la moneda y el papel ---
+            { time: 60, difficulty: 'media', variants: [
+                { question: "Si colocas una moneda sobre una hoja de papel encima de tu mesa y jalas la hoja rápidamente en horizontal, la moneda casi no se mueve del lugar. ¿Por qué ocurre esto?", options: [
+                    "Porque la moneda, por inercia, tiende a permanecer en reposo mientras la hoja se desliza rápido debajo de ella",
+                    "Porque la moneda tiene un imán natural que la mantiene pegada a la mesa",
+                    "Porque el papel, al jalarse rápido, empuja a la moneda hacia abajo con más fuerza",
+                    "Porque la fricción entre la moneda y el papel es tan grande que impide cualquier explicación distinta",
+                    "Porque la moneda pierde peso al jalar la hoja rápidamente",
+                    "Porque solo funciona con monedas metálicas y no con otros objetos"
+                ]},
+                { question: "Si haces la misma prueba pero jalas la hoja de papel muy despacio en vez de rápido, la moneda sí se mueve junto con la hoja. ¿Qué explica esta diferencia con respecto a jalarla rápido?", options: [
+                    "Al jalar despacio, la fricción alcanza a arrastrar a la moneda antes de que su inercia la mantenga en su lugar; al jalar rápido, la hoja se va antes de que la fricción logre moverla",
+                    "Porque jalar despacio hace que la moneda pierda peso y por eso se desliza con facilidad",
+                    "Porque la velocidad del jalón no tiene ninguna relación con lo que le pasa a la moneda",
+                    "Porque el papel cambia sus propiedades físicas según la velocidad con la que se jala",
+                    "Porque jalar rápido genera una fuerza magnética que rechaza a la moneda",
+                    "Porque las monedas solo obedecen la inercia cuando el movimiento es lento"
+                ]},
+                { question: "Un mesero puede jalar de golpe un mantel de una mesa dejando los vasos casi en su lugar. ¿Qué principio físico hace posible este truco?", options: [
+                    "La inercia de los vasos: al jalar el mantel muy rápido, no da tiempo de que la fricción arrastre a los vasos con él",
+                    "Que los vasos están pegados a la mesa con algún tipo de adhesivo invisible",
+                    "Que el mantel, al jalarse, empuja a los vasos hacia arriba y los mantiene flotando un instante",
+                    "Que los vasos pesan tan poco que no sienten ninguna fuerza durante el truco",
+                    "Que el aire generado por el jalón sostiene a los vasos en su lugar",
+                    "Que este truco solo puede explicarse con la Tercera Ley de Newton, no con la inercia"
+                ]}
+            ]},
+
+            // --- LEY 3 (Acción y reacción) - nadador / auto-propulsión empujando un medio ---
+            { time: 60, difficulty: 'media', variants: [
+                { question: "Cuando nadas, empujas el agua hacia atrás con tus brazos y avanzas hacia adelante. ¿Por qué ocurre esto?", options: [
+                    "Porque el agua, a su vez, empuja tu cuerpo hacia adelante con una fuerza igual y de sentido contrario",
+                    "Porque el agua pierde peso cuando la empujas y eso te impulsa",
+                    "Porque tus brazos generan una fuerza que actúa únicamente sobre ti mismo, sin involucrar al agua",
+                    "Porque nadar reduce la fuerza de gravedad que actúa sobre tu cuerpo",
+                    "Porque el agua es más liviana que tú y por eso cede ante el movimiento",
+                    "Porque el impulso solo depende de qué tan rápido muevas los brazos, sin relación con el agua"
+                ]},
+                { question: "Cuando remas en una canoa, el remo empuja el agua hacia atrás y la canoa avanza hacia adelante. ¿Qué explica que la canoa se mueva?", options: [
+                    "El agua ejerce sobre el remo (y por lo tanto sobre la canoa) una fuerza igual y contraria a la que el remo ejerció sobre ella",
+                    "El agua se aleja del remo y deja un espacio vacío que la canoa ocupa automáticamente",
+                    "El remo, al moverse, reduce el peso de la canoa y por eso avanza",
+                    "La fuerza que mueve la canoa proviene únicamente del brazo de quien rema, sin intervención del agua",
+                    "El agua empuja la canoa hacia adelante solo si el remo se mueve muy rápido",
+                    "La canoa avanza por la forma de su casco, sin relación con la fuerza aplicada al agua"
+                ]},
+                { question: "Un pulpo se impulsa expulsando agua con fuerza hacia atrás desde su cuerpo. ¿Por qué este movimiento hace que el pulpo avance hacia adelante?", options: [
+                    "Porque el agua expulsada ejerce una fuerza de reacción sobre el pulpo, igual en magnitud y de sentido contrario",
+                    "Porque el agua que sale reduce el peso total del pulpo de forma instantánea",
+                    "Porque el pulpo se vuelve más liviano al expulsar agua y por eso flota hacia adelante",
+                    "Porque expulsar agua no genera ninguna fuerza sobre el propio pulpo",
+                    "Porque el agua del mar empuja al pulpo independientemente de lo que él haga",
+                    "Porque el movimiento del pulpo depende solo de la forma de su cuerpo, no de una fuerza de reacción"
+                ]}
+            ]},
+
+            // --- LEY 3 (Acción y reacción) - empujar una pared / superficie fija ---
+            { time: 45, difficulty: 'facil', variants: [
+                { question: "Cuando empujas una pared con tu mano, ¿qué está pasando en realidad?", options: [
+                    "La pared empuja tu mano con la misma fuerza, en sentido contrario",
+                    "Solo tú ejerces fuerza sobre la pared; ella no ejerce ninguna fuerza sobre ti",
+                    "La pared absorbe toda la fuerza sin devolver nada",
+                    "No existe ninguna fuerza involucrada mientras la pared no se mueva",
+                    "La reacción solo ocurre si la pared es de un material muy duro",
+                    "La fuerza que sientes en tu mano proviene únicamente de tus propios músculos"
+                ]},
+                { question: "Si te apoyas con fuerza contra un árbol y notas que sientes presión en tu mano, ¿qué explica esa sensación?", options: [
+                    "El árbol ejerce sobre tu mano una fuerza igual y contraria a la que tú ejerces sobre él",
+                    "La sensación de presión no tiene relación con ninguna fuerza del árbol",
+                    "Solo tu mano genera fuerza; el árbol permanece completamente pasivo",
+                    "La presión que sientes se debe únicamente a la textura de la corteza",
+                    "Esa fuerza aparece solo si el árbol es lo suficientemente grueso",
+                    "Es un efecto exclusivo de empujar objetos vivos como los árboles"
+                ]},
+                { question: "Al recargarte con todo tu peso sobre una puerta cerrada, sientes que la puerta \"empuja de regreso\" contra tu hombro. ¿Qué principio explica esto?", options: [
+                    "La Tercera Ley de Newton: por cada acción hay una reacción igual y de sentido contrario",
+                    "La puerta genera esa fuerza solo porque está hecha de un material rígido",
+                    "Es simplemente la resistencia natural de los objetos inmóviles, sin relación con una fuerza",
+                    "La sensación se debe únicamente a la postura de tu cuerpo al empujar",
+                    "Esa fuerza de regreso solo aparece si empujas con mucha velocidad",
+                    "No hay ninguna fuerza real involucrada; es solo una sensación en el hombro"
+                ]}
+            ]},
+
+            // --- LEY 3 (Acción y reacción) - presionar las manos entre sí ---
+            { time: 45, difficulty: 'facil', variants: [
+                { question: "Si presionas tus propias manos, una contra la otra, frente a tu pecho, sientes fuerza en ambas manos al mismo tiempo. ¿Qué te dice esto sobre las fuerzas?", options: [
+                    "Que las fuerzas siempre actúan en pares: cada mano ejerce una fuerza sobre la otra, de igual magnitud y sentido contrario",
+                    "Que solo una de las manos está ejerciendo fuerza realmente",
+                    "Que la sensación en ambas manos es una simple coincidencia sin explicación física",
+                    "Que las fuerzas solo se sienten si se aplican con mucha intensidad",
+                    "Que la mano derecha siempre ejerce más fuerza que la izquierda",
+                    "Que este efecto solo ocurre porque ambas manos pertenecen a la misma persona"
+                ]},
+                { question: "Dos amigos chocan sus palmas al saludarse y ambos sienten el golpe en la mano por igual, aunque uno haya sido \"el que inició\" el choque. ¿Qué explica que ambos sientan la fuerza?", options: [
+                    "Cada mano ejerce sobre la otra una fuerza igual en magnitud y de sentido contrario, sin importar quién inició el movimiento",
+                    "Solo la persona que inició el choque realmente ejerce fuerza sobre la otra",
+                    "La sensación depende únicamente de qué tan fuerte golpee cada quien, no de una ley física",
+                    "Solo se siente fuerza si ambas personas chocan con la misma velocidad exacta",
+                    "El aire entre las manos es el que transmite la sensación de fuerza",
+                    "Uno de los dos, necesariamente, no siente ninguna fuerza en el choque"
+                ]},
+                { question: "Al aplaudir, tus dos manos chocan entre sí y ambas terminan sintiendo el impacto por igual. ¿Qué ley de Newton explica esto?", options: [
+                    "La Tercera Ley: cada mano ejerce sobre la otra una fuerza igual y contraria",
+                    "La Primera Ley, porque las manos estaban en reposo antes de aplaudir",
+                    "Ninguna ley de Newton, ya que se trata de dos partes del mismo cuerpo",
+                    "Solo se siente el impacto en la mano que se mueve más rápido",
+                    "Solo una mano recibe la fuerza real; la otra solo la transmite",
+                    "El impacto depende exclusivamente de la fuerza muscular, no de una fuerza de reacción"
+                ]}
+            ]},
+
+            // --- LEY 3 (Acción y reacción) - caminar (pie empuja el suelo) ---
+            { time: 60, difficulty: 'media', variants: [
+                { question: "Cuando caminas, tu pie empuja el suelo hacia atrás en cada paso. ¿Qué hace el suelo a cambio, y por qué eso te permite avanzar?", options: [
+                    "El suelo empuja tu pie hacia adelante con una fuerza igual y contraria, y esa reacción es la que te impulsa a avanzar",
+                    "El suelo no ejerce ninguna fuerza; avanzas solo por el impulso de tus músculos",
+                    "El suelo empuja tu pie hacia abajo, lo cual te hace avanzar por rebote",
+                    "El suelo absorbe la fuerza de tu pie sin devolver nada, y avanzas por inercia previa",
+                    "El aire alrededor de tu pie es el que te empuja hacia adelante al caminar",
+                    "El suelo solo reacciona si estás corriendo, no si caminas despacio"
+                ]},
+                { question: "Un patinador sobre hielo empuja el suelo hacia un lado con su patín para avanzar hacia el lado contrario. ¿Qué explica que logre desplazarse?", options: [
+                    "El hielo empuja el patín con una fuerza igual y de sentido contrario a la que el patín ejerció sobre el hielo",
+                    "El patinador avanza únicamente por la inclinación de su cuerpo, sin relación con el hielo",
+                    "El hielo no ejerce ninguna fuerza sobre el patín porque es una superficie muy lisa",
+                    "El impulso proviene solo de la fuerza de sus piernas, sin intervención del hielo",
+                    "El patín se desliza porque pierde fricción total con el hielo en ese instante",
+                    "El avance ocurre por la forma curva de las cuchillas del patín, no por una fuerza de reacción"
+                ]},
+                { question: "Al saltar hacia arriba, justo antes de despegar empujas el piso con tus pies. ¿Qué fuerza es la que realmente te impulsa hacia arriba?", options: [
+                    "La fuerza de reacción que el piso ejerce sobre tus pies, igual y contraria a la que tú ejerciste sobre él",
+                    "La fuerza de tus músculos actuando directamente sin ninguna reacción del piso",
+                    "La pérdida momentánea de peso que ocurre al doblar las rodillas",
+                    "El aire que queda atrapado bajo tus pies en el momento del salto",
+                    "Una fuerza que aparece solo si el piso es de un material elástico",
+                    "El impulso no depende de ninguna fuerza del piso, solo de la velocidad de tus piernas"
+                ]}
+            ]},
+
+            // --- LEY 3 (Acción y reacción) - propulsión en el vacío (cohete) ---
+            { time: 75, difficulty: 'dificil', variants: [
+                { question: "¿Por qué un cohete puede impulsarse en el espacio, donde no hay nada contra qué \"empujar\" como el aire o el piso?", options: [
+                    "Porque el cohete expulsa gases hacia atrás, y esos gases empujan al cohete hacia adelante con una fuerza igual y contraria; no necesita empujar aire ni piso",
+                    "Porque en el espacio no hay gravedad y por eso cualquier objeto se mueve sin necesidad de fuerzas",
+                    "Porque los gases expulsados generan una superficie temporal contra la cual el cohete se apoya",
+                    "Porque el vacío del espacio empuja al cohete automáticamente hacia adelante",
+                    "Porque el cohete usa el aire que lleva almacenado como si fuera una pista para impulsarse",
+                    "Porque solo se puede avanzar en el espacio si hay algo sólido cerca, como una estación espacial"
+                ]},
+                { question: "Un astronauta flotando en el espacio, sin nada cerca para sujetarse, lanza una herramienta pesada con fuerza en una dirección. ¿Qué le sucede al astronauta?", options: [
+                    "Se mueve en dirección contraria a la que lanzó la herramienta, por la fuerza de reacción que esta ejerce sobre él",
+                    "No le sucede nada, porque en el espacio no existen fuerzas de reacción",
+                    "Se queda completamente quieto porque no hay aire que transmita ninguna fuerza",
+                    "Empieza a girar sin control, sin relación con la dirección en que lanzó el objeto",
+                    "Se mueve en la misma dirección en que lanzó la herramienta",
+                    "Solo se movería si estuviera sujeto a una cuerda conectada a la nave"
+                ]},
+                { question: "Dentro de una nave espacial, un tripulante empuja con fuerza una pared para desplazarse hacia el lado opuesto de la cabina. ¿Qué principio hace posible este desplazamiento, igual que le pasaría a un cohete al expulsar gases?", options: [
+                    "La Tercera Ley de Newton: la pared ejerce sobre el tripulante una fuerza igual y contraria a la que él aplicó sobre ella",
+                    "La ausencia de gravedad, que por sí sola provoca el movimiento sin necesidad de ninguna fuerza",
+                    "La Primera Ley, ya que el tripulante estaba en reposo antes de empujar",
+                    "El aire dentro de la cabina, que es el verdadero responsable del desplazamiento",
+                    "Un efecto exclusivo de las naves espaciales que no aplica a los cohetes",
+                    "La pared no ejerce ninguna fuerza real, solo sirve como punto de apoyo pasivo"
+                ]}
+            ]},
+
+            // --- LEY 3 (Acción y reacción) - patinadores empujándose entre sí ---
+            { time: 60, difficulty: 'media', variants: [
+                { question: "Dos patinadores del mismo peso se empujan entre sí estando quietos, sobre hielo sin fricción. ¿Qué sucederá?", options: [
+                    "Ambos saldrán despedidos en direcciones opuestas, con fuerzas iguales entre sí",
+                    "Solo uno de los dos se moverá, dependiendo de quién empujó primero",
+                    "Ninguno se moverá porque las fuerzas se cancelan entre sí y no producen efecto",
+                    "Ambos se moverán en la misma dirección después del empujón",
+                    "Se moverá más el que pese menos, y el otro permanecerá inmóvil",
+                    "El resultado depende únicamente de qué tan fuerte grite cada uno al empujar"
+                ]},
+                { question: "Dos personas de pie sobre patinetas, en reposo y frente a frente, se empujan mutuamente con las manos. ¿Qué ocurre inmediatamente después del empujón?", options: [
+                    "Ambas se alejan una de la otra, cada una recibiendo una fuerza igual y de sentido contrario a la que ejerció",
+                    "Solo se aleja la persona que empujó con más fuerza; la otra permanece en su lugar",
+                    "Ambas permanecen inmóviles porque las fuerzas de sus manos se anulan por completo",
+                    "Ambas se mueven hacia el mismo lado, siguiendo la dirección del empujón inicial",
+                    "Solo una de las dos personas experimenta una fuerza real durante el empujón",
+                    "El movimiento depende exclusivamente del peso de cada persona, sin relación con la Tercera Ley"
+                ]},
+                { question: "Dos personas están sentadas en sillas con ruedas, una frente a otra, y una de ellas empuja los pies de la otra con fuerza. ¿Qué pasará con ambas sillas?", options: [
+                    "Las dos sillas se alejarán entre sí, ya que la persona empujada también ejerce una fuerza de reacción sobre quien empujó",
+                    "Solo la silla de la persona empujada se moverá; la que empujó permanecerá quieta",
+                    "Ninguna silla se moverá, porque solo una de las dos aplicó una fuerza activa",
+                    "Ambas sillas se moverán hacia el mismo lado, en la dirección del empujón",
+                    "El movimiento de las sillas depende únicamente de la fricción de las ruedas, no de una fuerza de reacción",
+                    "Solo se moverán las sillas si las dos personas empujan al mismo tiempo con la misma fuerza"
+                ]}
+            ]}
+        ];
+
+        let studentName = '';
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 60;
+        let timer = null;
+        let shuffledOptions = [];
+        let answeredQuestions = [];
+        let selectedAnswer = null;
+        let quizQuestions = []; // preguntas ya seleccionadas y en su orden final para este alumno
+
+        function showNameInput() {
+            document.getElementById('quiz-start').style.display = 'none';
+            document.getElementById('name-input').style.display = 'block';
+            document.getElementById('student-name').focus();
+        }
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function buildQuizForStudent() {
+            // 1) elegir una variante aleatoria por cada slot del banco
+            const picked = questionBank.map(slot => {
+                const v = slot.variants[Math.floor(Math.random() * slot.variants.length)];
+                return { question: v.question, options: v.options, time: slot.time, difficulty: slot.difficulty };
+            });
+            // 2) revolver el orden de las 12 preguntas
+            return shuffleArray(picked);
+        }
+
+        function startQuiz() {
+            const nameInput = document.getElementById('student-name');
+            studentName = nameInput.value.trim();
+            if (studentName === '') { alert('Por favor ingresa tu nombre completo (Apellidos Nombre)'); return; }
+            document.getElementById('name-input').style.display = 'none';
+            document.getElementById('quiz-questions').style.display = 'block';
+            currentQuestion = 0; score = 0; answeredQuestions = [];
+            quizQuestions = buildQuizForStudent();
+            loadQuestion();
+        }
+
+        const difficultyLabels = { facil: 'Fácil', media: 'Media', dificil: 'Difícil' };
+
+        function loadQuestion() {
+            if (currentQuestion >= quizQuestions.length) { showResults(); return; }
+            const question = quizQuestions[currentQuestion];
+            document.getElementById('progress-text').innerHTML = `Pregunta ${currentQuestion + 1} de ${quizQuestions.length}<span class="difficulty-tag ${question.difficulty}">${difficultyLabels[question.difficulty] || ''}</span>`;
+            document.getElementById('progress-fill').style.width = (((currentQuestion + 1) / quizQuestions.length) * 100) + '%';
+            document.getElementById('question-text').textContent = question.question;
+            // la opción correcta es siempre el índice 0 antes de revolver
+            shuffledOptions = question.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+            shuffleArray(shuffledOptions);
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            shuffledOptions.forEach((option, idx) => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = String.fromCharCode(65 + idx) + ') ' + option.text;
+                button.onclick = () => selectAnswer(idx);
+                optionsContainer.appendChild(button);
+            });
+            selectedAnswer = null;
+            timeLeft = question.time || 60;
+            document.getElementById('next-btn').disabled = true;
+            updateTimer();
+            if (timer) clearInterval(timer);
+            startTimer();
+        }
+
+        function selectAnswer(index) {
+            selectedAnswer = index;
+            document.querySelectorAll('.option-button').forEach((btn, idx) => btn.classList.toggle('selected', idx === index));
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            clearInterval(timer);
+            const isCorrect = selectedAnswer !== null && shuffledOptions[selectedAnswer].originalIndex === 0;
+            if (isCorrect) score++;
+            answeredQuestions.push({ question: currentQuestion, selected: selectedAnswer, correct: isCorrect });
+            currentQuestion++;
+            if (currentQuestion < quizQuestions.length) loadQuestion(); else showResults();
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--; updateTimer();
+                if (timeLeft <= 0) { clearInterval(timer); nextQuestion(); }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = timeLeft + 's';
+            timerElement.classList.toggle('warning', timeLeft <= 10);
+        }
+
+        function showResults() {
+            clearInterval(timer);
+            document.getElementById('quiz-questions').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'block';
+            const finalScore = ((score / quizQuestions.length) * 10).toFixed(1);
+            document.getElementById('result-student-name').textContent = studentName;
+            document.getElementById('final-score').textContent = finalScore;
+            document.getElementById('score-fraction').textContent = `${score} de ${quizQuestions.length} correctas`;
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('result-date').textContent = 'Fecha: ' + now.toLocaleDateString('es-MX', options);
+            const summaryContainer = document.getElementById('summary-container');
+            summaryContainer.innerHTML = '';
+            answeredQuestions.forEach((answer, idx) => {
+                const div = document.createElement('div');
+                div.className = 'summary-item ' + (answer.correct ? 'correct' : 'incorrect');
+                div.innerHTML = `<div class="summary-item-content"><span class="summary-icon ${answer.correct ? 'correct' : 'incorrect'}">${answer.correct ? '✓' : '✗'}</span><p class="summary-text"><strong>Pregunta ${idx + 1}:</strong> ${answer.correct ? 'Correcta' : 'Incorrecta'}</p></div>`;
+                summaryContainer.appendChild(div);
+            });
+        }
+
+        // ===================================================================
+        // MEDIDAS ANTIFRAUDE / ANTI-COPIA / ANTI-PEGADO
+        // Diseñadas para minimizar falsos positivos en celular: se usa un
+        // "debounce" de 1.5s antes de contar una salida real, para ignorar
+        // parpadeos breves (teclado, notificaciones, cuadros de diálogo).
+        // ===================================================================
+
+        let exitCount = 0;
+        let quizInProgress = false;
+        let hiddenCheckTimer = null;
+
+        function updateExitCounter() {
+            const counter = document.getElementById('exit-counter');
+            const countSpan = document.getElementById('exit-count');
+            if (exitCount > 0) {
+                counter.style.display = 'block';
+                countSpan.textContent = exitCount;
+            }
+        }
+
+        function dismissWarning() {
+            document.getElementById('security-overlay').classList.remove('show');
+        }
+
+        function scheduleExitCheck() {
+            if (!quizInProgress || hiddenCheckTimer) return;
+            hiddenCheckTimer = setTimeout(() => {
+                hiddenCheckTimer = null;
+                if (quizInProgress && (document.hidden || !document.hasFocus())) {
+                    exitCount++;
+                    updateExitCounter();
+                    document.getElementById('security-overlay').classList.add('show');
+                }
+            }, 1500);
+        }
+
+        function cancelExitCheck() {
+            if (hiddenCheckTimer) { clearTimeout(hiddenCheckTimer); hiddenCheckTimer = null; }
+        }
+
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+
+        ['copy', 'cut', 'paste', 'dragstart', 'drop'].forEach(function(evt) {
+            document.addEventListener(evt, function(e) {
+                if (e.target && e.target.id === 'student-name') return;
+                e.preventDefault();
+                return false;
+            });
+        });
+
+        document.addEventListener('selectstart', function(e) {
+            if (e.target && e.target.id === 'student-name') return;
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const key = e.key ? e.key.toLowerCase() : '';
+            const ctrlOrCmd = e.ctrlKey || e.metaKey;
+            if (key === 'f12') { e.preventDefault(); return false; }
+            if (ctrlOrCmd && ['c', 'x', 'v', 'a', 's', 'p', 'u'].includes(key)) {
+                if (e.target && e.target.id === 'student-name' && key === 'a') return;
+                e.preventDefault();
+                return false;
+            }
+            if (ctrlOrCmd && e.shiftKey && ['i', 'j', 'c'].includes(key)) { e.preventDefault(); return false; }
+        });
+
+        // Señal principal (fiable en móvil): cambio real de visibilidad de la página.
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) { scheduleExitCheck(); } else { cancelExitCheck(); }
+        });
+
+        // Señal secundaria: pérdida de foco de la ventana (se confirma con el debounce).
+        window.addEventListener('blur', function() { scheduleExitCheck(); });
+        window.addEventListener('focus', function() { cancelExitCheck(); });
+
+        const originalStartQuiz = startQuiz;
+        startQuiz = function() {
+            originalStartQuiz();
+            quizInProgress = true;
+        };
+
+        const originalShowResults = showResults;
+        showResults = function() {
+            quizInProgress = false;
+            cancelExitCheck();
+            originalShowResults();
+            const scoreDisplay = document.querySelector('.score-display');
+            if (scoreDisplay) {
+                const exitInfo = document.createElement('p');
+                exitInfo.className = 'fraction';
+                exitInfo.style.marginTop = '0.5rem';
+                exitInfo.textContent = `Salidas de pantalla detectadas: ${exitCount}`;
+                scoreDisplay.appendChild(exitInfo);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateExitCounter();
+        });
+    </script>
+</body>
+</html>
